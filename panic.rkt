@@ -46,7 +46,7 @@
                   ((eq? (car args) reset)
                    (send updater stop)
                    (set! t 0))
-                
+                  (else ())))))
       
       
       (define button (new button%

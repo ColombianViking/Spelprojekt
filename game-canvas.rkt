@@ -32,4 +32,3 @@
                     [paint-callback (lambda (canvas dc) (send dc draw-rectangle 240 240 20 20))]
                     [mouse-handler mouse-func]))
 
-(send window show #t)

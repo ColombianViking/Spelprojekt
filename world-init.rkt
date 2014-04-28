@@ -11,4 +11,15 @@
     (when (pair? (assoc num *window-list*))
       ((cdr (assoc num *window-list*))))))
 
-(add-window! 1 panic)
+(define random-list-generator
+  (let ((n 10) (lst null))
+    (define (loop)
+      (if (= n 0)
+          lst
+          (begin (set! lst (cons (random 10) lst))
+                 (set! n (- n 1))
+                 (loop))))
+    (loop)
+    (remove-duplicates lst)
+    (length lst)))
+          
