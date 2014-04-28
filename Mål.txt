@@ -1,0 +1,15 @@
+Win-condition (send window show #t)
+
+Önskade fönster:
+
+Nivå 1:
+
+Gåtor Text och Bild
+
+Nivå 2:
+
+Pekarbaserade jävlar
+
+Nivå 3:
+
+Minispelen
