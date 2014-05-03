@@ -1,0 +1,25 @@
+(define timer
+  (let ((t 0) (n 10))
+    (lambda args
+      (define update
+        (lambda ()
+          (when (= n 0)
+            (send updater stop))
+          (set! t (+ t 1))
+          (set! n (- n 1))
+          (display t)))
+    
+    (define updater (new timer% [notify-callback update]))
+    (display args)
+    (cond ((null? args) t)
+          ((eq? (car args) 'start)
+           (send updater start 1000))
+          ((eq? (car args) 'reset)
+                   (set! t 0)
+                   (set! n 10)
+                   (send updater stop))
+          ((eq? (car args) 'stop) 
+           (send updater stop))
+          (else (void))))))
+(timer 'start)
+(timer 'stop)
