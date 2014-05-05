@@ -11,15 +11,50 @@
     (when (pair? (assoc num *window-list*))
       ((cdr (assoc num *window-list*))))))
 
-(define random-list-generator
-  (let ((n 10) (lst null))
-    (define (loop)
-      (if (= n 0)
-          lst
-          (begin (set! lst (cons (random 10) lst))
-                 (set! n (- n 1))
-                 (loop))))
-    (loop)
-    (remove-duplicates lst)
-    (length lst)))
-          
+(define next-win
+  (lambda ()
+    (define window
+      (new frame%
+           [height 500]
+           [width 500]
+           [label "A WINNER IS YOU"]
+           ))
+    
+    (define p-callback
+      (lambda (canvas dc)
+        (send dc draw-rectangle 120 230 10 100)
+        (send dc draw-text "Fönstret är avklarat" 170 190)))
+    
+    (define cv
+      (new canvas%
+           [parent window]
+           [paint-callback p-callback]))
+    
+    (define center-pane (new horizontal-pane%
+                           [parent window]
+                           [alignment '(center center)]))
+    
+    (define exit-button
+      (new button%
+           [parent center-pane]
+           [label "Exit"]
+           [callback (lambda (button event)
+                       (send window show #f))]))
+    
+    (define replay-button
+      (new button%
+           [parent center-pane]
+           [label "Replay"]
+           [callback (lambda (button event)
+                       (send button set-label (send exit-button get-label)))]))
+    
+    (define next-button
+      (new button%
+           [parent center-pane]
+           [label "Next"]
+           [callback (lambda (button event)
+                       (send button set-label (send exit-button get-label)))]))
+    (send window show #t)))
+    
+
+           
