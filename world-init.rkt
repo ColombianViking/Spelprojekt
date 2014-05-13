@@ -1,4 +1,8 @@
 (load "panic.rkt")
+(load "maze.rkt")
+(load "piano.rkt")
+(load "structure-windows.rkt")
+(load "ball.rkt")
 
 (define *window-list* null)
 
@@ -11,50 +15,12 @@
     (when (pair? (assoc num *window-list*))
       ((cdr (assoc num *window-list*))))))
 
-(define next-win
+(add-window! 1 maze)
+(add-window! 2 panic)
+(add-window! 3 piano)
+(add-window! 4 ballball)
+    
+(define game-start
   (lambda ()
-    (define window
-      (new frame%
-           [height 500]
-           [width 500]
-           [label "A WINNER IS YOU"]
-           ))
+    (start-window)))
     
-    (define p-callback
-      (lambda (canvas dc)
-        (send dc draw-rectangle 120 230 10 100)
-        (send dc draw-text "Fönstret är avklarat" 170 190)))
-    
-    (define cv
-      (new canvas%
-           [parent window]
-           [paint-callback p-callback]))
-    
-    (define center-pane (new horizontal-pane%
-                           [parent window]
-                           [alignment '(center center)]))
-    
-    (define exit-button
-      (new button%
-           [parent center-pane]
-           [label "Exit"]
-           [callback (lambda (button event)
-                       (send window show #f))]))
-    
-    (define replay-button
-      (new button%
-           [parent center-pane]
-           [label "Replay"]
-           [callback (lambda (button event)
-                       (send button set-label (send exit-button get-label)))]))
-    
-    (define next-button
-      (new button%
-           [parent center-pane]
-           [label "Next"]
-           [callback (lambda (button event)
-                       (send button set-label (send exit-button get-label)))]))
-    (send window show #t)))
-    
-
-           
