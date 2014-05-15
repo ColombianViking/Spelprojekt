@@ -131,7 +131,13 @@
                                (send dc set-font (make-object font% 10 'default 'italic))
                                (send dc draw-text "Try to navigate through our windows" 100 120)
                                (send dc draw-text "A tip: Read everything shown to you on the windows." 50 140)
-                               (send dc draw-text "Enter your name below if you feel like it." 100 160))]))
+                               (send dc draw-text "Enter your name below if you feel like it." 100 160)
+                               (send dc draw-bitmap (read-bitmap "elak.png") 210 250))]))
+      
+;      (define middle
+;        (new horizontal-pane%
+;             [parent window]
+;             [alignment '(center bottom)]))   
       (define input-name
         (new text-field%
              [parent window]
@@ -139,16 +145,11 @@
              [callback (lambda (field event)
                          (when (eq? (send event get-event-type) 'text-field-enter)
                            (send player-stats set-name (send field get-value))))]))
-      (define middle
-        (new horizontal-pane%
-             [parent window]
-             [alignment '(center center)]))   
-      
       
       
       (define start-button
         (new button%
-             [parent middle]
+             [parent window]
              [label "Click here to start"]
              [callback (lambda (button event)
                          (send player-stats set-name (send input-name get-value))
@@ -167,7 +168,6 @@
       (send player-stats load-high-scores!)
       (send highscore set-label (let ((txt "")) 
                                   (for-each (lambda (x)
-                                              (display (symbol? (car x)))
                                               (set! txt (string-append (symbol->string (car x)) 
                                                                        "      " 
                                                                        (string-append (number->string (quotient (cdr x) 60))
@@ -210,8 +210,9 @@
         (cond ((< (send player-stats get-min) 1)
                (send insult-message set-label "If you want to complete before the foundations of the UNIX-system break down, you better get a move on."))
               ((< (send player-stats get-min) 2)
-               (send insult-message set-label (string-append "I detect a scent of smoke... Are you trying to think? "
-                                                             (send player-stats get-name))))
+               (send insult-message set-label (string-append "I detect a scent of smoke... Are you trying to think "
+                                                             (send player-stats get-name)
+                                                             "?")))
               ((< (send player-stats get-min) 3)
                (send insult-message set-label (string-append "2 minutes have passed and you have only done " 
                                                              (number->string (send player-stats get-stage)) 
@@ -242,28 +243,46 @@
 
 (define winner-window
   (lambda ()
-    (define window (new frame% 
-                        [width 500]
-                        [height 500]
-                        [label "Fett fränt, frände"]
-                        ))
-    (define p-callback
-      (lambda (canvas dc)
-        (send dc translate 250 250)
-        (send dc draw-rectangle -25 -25 50 50)))
-    (define canvas (new canvas%
-                        [parent window]
-                        [paint-callback p-callback]))
-    (define rotations
-      (new timer% [notify-callback (lambda ()
-                                     (send (send canvas get-dc) rotate 1)
-                                     (send (send canvas get-dc) draw-rectangle -25 -25 50 50)
-                                     (send (send canvas get-dc) draw-text "LOL" -10 -10) 
-                                     )]))
-    (define button (new button% 
-                        [parent window]
-                        [label "Exit"]
-                        [callback (lambda (button event)
-                                    (send window show #f))]))
-    (send window show #t)
-    (send rotations start 200)))
+    (let ((fun-factor #f))
+      (define window (new frame% 
+                          [width 500]
+                          [height 500]
+                          [label "Fett fränt, frände"]
+                          ))
+      (define p-callback
+        (lambda (canvas dc)
+          (send dc translate 250 250)))
+      (define canvas (new canvas%
+                          [parent window]
+                          [paint-callback p-callback]))
+      (define rotations
+        (new timer% [notify-callback (lambda ()
+                                       (when fun-factor
+                                         (send (send canvas get-dc) rotate (/ pi 180)))
+                                       (send (send canvas get-dc) clear)
+                                       (send (send canvas get-dc) draw-text (string-append "Grattis " 
+                                                                                           (send player-stats get-name)
+                                                                                           ", Du klarade spelet på tiden "
+                                                                                           (send player-stats get-time))
+                                             -150 0)
+                                       (when fun-factor
+                                         (send (send canvas get-dc) set-background (make-object color% (random 255) (random 255)(random 255))))
+                                       
+                                       )]))
+      (define fun-button (new button% 
+                              [parent window]
+                              [label "I like fun and do not suffer from epilepsy"]
+                              [callback (lambda (button event)
+                                          (set! fun-factor (not fun-factor))
+                                          (if fun-factor
+                                              (send fun-button set-label "I don't like this")
+                                              (send fun-button set-label "I like fun and do not suffer from epilepsy")))]))
+      
+      (define exit-button (new button% 
+                               [parent window]
+                               [label "Exit"]
+                               [callback (lambda (button event)
+                                           (send window show #f))]))
+      
+      (send window show #t)
+      (send rotations start 10))))

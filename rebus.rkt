@@ -21,7 +21,8 @@
       (lambda (field event)
         (displayln (string? (send field get-value)))
         (when (and (eq? (send event get-event-type) 'text-field-enter)
-                   (equal? (send field get-value) "butterface"))
+                   (or (equal? (send field get-value) "butterface")
+                       (equal? (send field get-value) "Butterface")))
           (send window show #f)
           (start-next))))
     
