@@ -1,6 +1,6 @@
 (load "game-canvas.rkt")
 
-(define maze
+(define dodge
   (lambda ()
     (define window
       (new frame%

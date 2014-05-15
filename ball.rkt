@@ -1,10 +1,10 @@
 (load "game-canvas.rkt")
-
+(require math/number-theory)
 (define ballball
   (lambda ()
     (define window
       (new frame%
-           [label "Yep, this is the most boring window of them all"]
+           [label "LOCATION LOCATION LOCATION"]
            [width 500]
            [height 500]
            ))
@@ -24,11 +24,25 @@
     
     (define p-callback
       (lambda (canvas dc)
-        (let* ((loc (send baller get-loc)) (x (car loc)) (y (cdr loc)))
-          ;(send dc draw-bitmap (read-bitmap "pilar.png") 0 0)
-          (send dc draw-text "x^2 y-250 x^2-600 x y+150000 x+90000 y-22500000 = 0" 15 30)
-          (send dc draw-rectangle 50 100 200 30)
-          (send dc draw-text (string-append "y = " (number->string (send baller get-y)) ", x = " (number->string (send baller get-x))) 55 105)
+        (let* ((loc (send baller get-loc)) 
+               (x (car loc)) 
+               (y (cdr loc)) 
+               (answer-dist (integer-root (+ (expt (- x 110) 2) 
+                                             (expt (- y 300) 2))
+                                          2)))
+          (send dc draw-bitmap (read-bitmap "pilar.png") 0 0)
+          (send dc draw-text "(XX) = XYYX" 215 30)
+          (send dc set-font (make-object font% 8 'default))
+          (send dc draw-text "Y" 243 21)
+          (send dc set-font (make-object font% 12 'default))
+          (send dc set-brush "cyan" 'solid)
+          (send dc draw-rectangle 50 100 220 30)
+          (send dc draw-text "y * 100 = ? , x * 10 = ?" 55 105)
+          (if (< answer-dist 255)
+              (send dc set-brush (make-object color% answer-dist 255 answer-dist) 'solid)
+              (send dc set-brush "white" 'solid))
+          (send dc draw-rectangle 50 140 220 30)
+          (send dc draw-text (string-append "y = " (number->string y) ", x = " (number->string x)) 55 145)
           (send dc set-brush "yellow" 'solid)
           (send dc draw-ellipse x y 10 10))))
     
@@ -87,14 +101,16 @@
       (new timer%
            [notify-callback (lambda ()
                                 (send gcv refresh)
-                              (when (and (< (abs (- (send baller get-x) 250)) 3) (< (abs (- (send baller get-y) 300)) 3))
-                                (send baller respawn)
+                              (when (and (< (abs (- (send baller get-x) 110)) 3) (< (abs (- (send baller get-y) 300)) 3))
+                                ;(send baller respawn)
                                 (new button%
-                                     [label "OH"]
+                                     [label "NICE"]
                                      [parent window]
-                                     [callback (lambda (button event) (start-next))]
+                                     [callback (lambda (button event) 
+                                                 (send window show #f) 
+                                                 (start-next))]
                                      )))]))
     
     (send window show #t)
     (send baller draw)
-    (send graph-update start 20)))
+    (send graph-update start 16)))
