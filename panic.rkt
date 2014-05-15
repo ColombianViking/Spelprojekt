@@ -29,9 +29,7 @@
                                            (let ((mx (send mouse get-x)) (my (send mouse get-y)))
                                              (when (and (send mouse moving?) (or (> 200 mx) (< 300 mx) (> 300 my) (< 400 my)))
                                                (send canvas refresh))
-                                              ; (send (send canvas get-dc) draw-rectangle 50 100 200 30)
-                                               ;(send (send canvas get-dc) draw-text (string-append "y = " (number->string my) ", x = " (number->string mx)) 55 105))
-                                             
+                                                                                            
                                              (when (or (> 200 mx) (< 300 mx) (> 300 my) (< 400 my))
                                                (timer 'reset))
                                            

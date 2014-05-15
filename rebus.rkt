@@ -22,7 +22,8 @@
         (displayln (string? (send field get-value)))
         (when (and (eq? (send event get-event-type) 'text-field-enter)
                    (equal? (send field get-value) "butterface"))
-          (send window show #f))))
+          (send window show #f)
+          (start-next))))
     
     (define text (new text-field%
                       [label "Password:"]

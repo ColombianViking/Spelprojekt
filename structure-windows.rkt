@@ -49,10 +49,10 @@
       (let ((in (open-input-file input-port)))
         (set! high-scores (read in))
         (set! high-scores (filter (lambda (x) (not (eof-object? x))) high-scores))
-;        (set! high-scores (map (lambda (x) 
-;                                 (cons (car x) 
-;                                       (string-append (number->string (quotient (cdr x) 60)) ":" (number->string (remainder (cdr x) 60))))) 
-;                               high-scores))
+        ;        (set! high-scores (map (lambda (x) 
+        ;                                 (cons (car x) 
+        ;                                       (string-append (number->string (quotient (cdr x) 60)) ":" (number->string (remainder (cdr x) 60))))) 
+        ;                               high-scores))
         (close-input-port in)))
     (super-new)))
 
@@ -143,9 +143,9 @@
         (new horizontal-pane%
              [parent window]
              [alignment '(center center)]))   
-            
-
-  
+      
+      
+      
       (define start-button
         (new button%
              [parent middle]
@@ -171,10 +171,10 @@
                                               (set! txt (string-append (symbol->string (car x)) 
                                                                        "      " 
                                                                        (string-append (number->string (quotient (cdr x) 60))
-                                                                       ":" 
-                                                                       (if (< (remainder (cdr x) 60) 10) 
-                                                                           "0" "")
-                                                                       (number->string (remainder (cdr x) 60))) 
+                                                                                      ":" 
+                                                                                      (if (< (remainder (cdr x) 60) 10) 
+                                                                                          "0" "")
+                                                                                      (number->string (remainder (cdr x) 60))) 
                                                                        "\n" 
                                                                        txt))) 
                                             (first-n 3 (send player-stats get-high-scores)))
@@ -199,25 +199,25 @@
            [height 100]))
     
     (define gt-callback
-        (lambda ()
-          (when (send player-stats get-win-cond)
-            (send game-timer stop)
-            (send insult-message set-label "Congrats"))
-          (send player-stats add-sec)
-          (if (< (remainder (send player-stats get-sec) 60) 10)
-              (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":0" (number->string (remainder (send player-stats get-sec) 60)))) 
-              (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":" (number->string (remainder (send player-stats get-sec) 60)))))
-          (cond ((< (send player-stats get-min) 1)
-                 (send insult-message set-label "If you want to complete before the foundations of the UNIX-system break down, you better get a move on."))
-                ((< (send player-stats get-min) 2)
-                 (send insult-message set-label (string-append "I detect a scent of smoke... Are you trying to think? "
-                                                               (send player-stats get-name))))
-                ((< (send player-stats get-min) 3)
-                 (send insult-message set-label (string-append "2 minutes have passed and you have only done " 
-                                                               (number->string (send player-stats get-stage)) 
-                                                               " levels.")))
-                (else 
-                 (send insult-message set-label "Time flies like an arrow, fruit flies like a banana")))))
+      (lambda ()
+        (when (send player-stats get-win-cond)
+          (send game-timer stop)
+          (send insult-message set-label "Congrats"))
+        (send player-stats add-sec)
+        (if (< (remainder (send player-stats get-sec) 60) 10)
+            (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":0" (number->string (remainder (send player-stats get-sec) 60)))) 
+            (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":" (number->string (remainder (send player-stats get-sec) 60)))))
+        (cond ((< (send player-stats get-min) 1)
+               (send insult-message set-label "If you want to complete before the foundations of the UNIX-system break down, you better get a move on."))
+              ((< (send player-stats get-min) 2)
+               (send insult-message set-label (string-append "I detect a scent of smoke... Are you trying to think? "
+                                                             (send player-stats get-name))))
+              ((< (send player-stats get-min) 3)
+               (send insult-message set-label (string-append "2 minutes have passed and you have only done " 
+                                                             (number->string (send player-stats get-stage)) 
+                                                             " levels.")))
+              (else 
+               (send insult-message set-label "Time flies like an arrow, fruit flies like a banana")))))
     
     (define timer-display
       (new message%

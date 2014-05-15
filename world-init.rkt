@@ -8,6 +8,7 @@
 (load "mazeofspades.rkt")
 (load "nextnumber.rkt")
 (load "rebus.rkt")
+(load "move.rkt")
 
 (define *window-list* null)
 
@@ -29,6 +30,7 @@
 (add-window! 7 riddle)
 (add-window! 8 dodge)
 (add-window! 9 rebus)
+(add-window! 10 grass)
 
 
     

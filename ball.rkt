@@ -27,7 +27,7 @@
         (let* ((loc (send baller get-loc)) 
                (x (car loc)) 
                (y (cdr loc)) 
-               (answer-dist (integer-root (+ (expt (- x 110) 2) 
+               (answer-dist (integer-root (+ (expt (- x 10) 2) 
                                              (expt (- y 300) 2))
                                           2)))
           (send dc draw-bitmap (read-bitmap "pilar.png") 0 0)
@@ -94,14 +94,14 @@
       (new ball%
            [start (cons 10 250)]
            [y 250]
-           [x 10]
+           [x 250]
            [status 'alive]))
     
     (define graph-update
       (new timer%
            [notify-callback (lambda ()
                                 (send gcv refresh)
-                              (when (and (< (abs (- (send baller get-x) 110)) 3) (< (abs (- (send baller get-y) 300)) 3))
+                              (when (and (< (abs (- (send baller get-x) 10)) 3) (< (abs (- (send baller get-y) 300)) 3))
                                 ;(send baller respawn)
                                 (new button%
                                      [label "NICE"]
