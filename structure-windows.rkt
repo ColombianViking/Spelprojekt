@@ -119,20 +119,35 @@
         (new frame%
              [label "Welcome mortal!"]
              [width 500]
-             [height 600]))
+             [height 670]))
+      
+      (define tutorial-window
+        (new frame%
+             [label "Help"]
+             [width 200]
+             [height 50]))
+      
+      (define tutorial-message
+        (new message%
+             [parent tutorial-window]
+             [label (string-append "Read everything all the information provided to you in every window.\n" 
+                                   "Try to think outside the box.\n"
+                                   "Some windows may require you to click on it to enable interactivity.\n"
+                                   "C C G G A A G")]))
       
       (define canvas
         (new canvas%
              [parent window]
              [paint-callback (lambda (canvas dc)
-                               (send dc set-font (make-object font% 30 'default))
-                               (send dc draw-text "Welcome to" 50 30)
-                               (send dc draw-text "JayJay-WindowNavigation" 5 65)
-                               (send dc set-font (make-object font% 10 'default 'italic))
-                               (send dc draw-text "Try to navigate through our windows" 100 120)
-                               (send dc draw-text "A tip: Read everything shown to you on the windows." 50 140)
-                               (send dc draw-text "Enter your name below if you feel like it." 100 160)
-                               (send dc draw-bitmap (read-bitmap "elak.png") 210 250))]))
+;                               (send dc set-font (make-object font% 30 'default))
+;                               (send dc draw-text "Welcome to" 50 30)
+;                               (send dc draw-text "JayJay-WindowNavigation" 5 65)
+;                               (send dc set-font (make-object font% 10 'default 'italic))
+;                               (send dc draw-text "Try to navigate through our windows" 100 120)
+;                               (send dc draw-text "A tip: Read everything shown to you on the windows." 50 140)
+;                               (send dc draw-text "Enter your name below if you feel like it." 100 160)
+;                               (send dc draw-bitmap (read-bitmap "elak.png") 210 250)
+                               (send dc draw-bitmap (read-bitmap "inc.png") 0 0))]))
       
 ;      (define middle
 ;        (new horizontal-pane%
@@ -152,7 +167,9 @@
              [parent window]
              [label "Click here to start"]
              [callback (lambda (button event)
-                         (send player-stats set-name (send input-name get-value))
+                         (play-sound "tystnad.wav" #t)
+                         (unless (eq? (send input-name get-value) "")
+                           (send player-stats set-name (send input-name get-value)))
                          (send player-stats set-stage 1)
                          (send window show #f)
                          (run-window 1)
@@ -164,6 +181,27 @@
              [label ""]
              [font (make-object font% 12 'default)]
              [auto-resize #t]))
+      
+      (define music
+        (new button%
+             [parent window]
+             [label "Stop the music"]
+             [callback (let ((t #t))
+                         (lambda (button event)
+                           (if t
+                               (begin (play-sound "tystnad.wav" #t)
+                                      (send music set-label "Play"))
+                               (begin (play-sound "Rap_King.wav" #t)
+                                      (send music set-label "Stop the music")))
+                           (set! t (not t))))]))
+      
+      (define tutorialbutton
+        (new button%
+             [parent window]
+             [label "Some help"]
+             [callback (lambda (button event)
+                         (send tutorial-window show #t))]))
+        
       
       (send player-stats load-high-scores!)
       (send highscore set-label (let ((txt "")) 
@@ -179,6 +217,7 @@
                                                                        txt))) 
                                             (first-n 3 (send player-stats get-high-scores)))
                                   (string-append "   Highscore\nName      Time\n" txt)))
+      (play-sound "Rap_King.wav" #t)
       (send window show #t))))
 
 (define (start-next)
@@ -247,7 +286,7 @@
       (define window (new frame% 
                           [width 500]
                           [height 500]
-                          [label "Fett fränt, frände"]
+                          [label "A winner is you!"]
                           ))
       (define p-callback
         (lambda (canvas dc)
@@ -260,9 +299,9 @@
                                        (when fun-factor
                                          (send (send canvas get-dc) rotate (/ pi 180)))
                                        (send (send canvas get-dc) clear)
-                                       (send (send canvas get-dc) draw-text (string-append "Grattis " 
+                                       (send (send canvas get-dc) draw-text (string-append "Congrats " 
                                                                                            (send player-stats get-name)
-                                                                                           ", Du klarade spelet på tiden "
+                                                                                           ", You clocked in at "
                                                                                            (send player-stats get-time))
                                              -150 0)
                                        (when fun-factor
@@ -275,14 +314,17 @@
                               [callback (lambda (button event)
                                           (set! fun-factor (not fun-factor))
                                           (if fun-factor
-                                              (send fun-button set-label "I don't like this")
-                                              (send fun-button set-label "I like fun and do not suffer from epilepsy")))]))
+                                              (begin (send fun-button set-label "I don't like this")
+                                                     (play-sound "Rap_King.wav" #t))
+                                              (begin (send fun-button set-label "I like fun and do not suffer from epilepsy")
+                                                     (play-sound "tystnad.wav" #t))))]))
       
       (define exit-button (new button% 
                                [parent window]
                                [label "Exit"]
                                [callback (lambda (button event)
-                                           (send window show #f))]))
+                                           (send window show #f)
+                                           (play-sound "tystnad.wav" #t))]))
       
       (send window show #t)
       (send rotations start 10))))

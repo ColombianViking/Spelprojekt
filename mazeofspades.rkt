@@ -20,9 +20,11 @@
     
     (define t-callback
       (lambda (field event)
-        (displayln (string? (send field get-value)))
         (when (and (eq? (send event get-event-type) 'text-field-enter)
-                   (equal? (send field get-value) "BH"))
+                   (or (equal? (send field get-value) "BH")
+                       (equal? (send field get-value) "bh")
+                       (equal? (send field get-value) "B H")
+                       (equal? (send field get-value) "b h")))
           (begin (send window show #f)
                        (start-next)))))
                               

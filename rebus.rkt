@@ -3,7 +3,7 @@
     (define window (new frame%
                         [width 500]
                         [height 500]
-                        [label "Rebus of Destruction"]
+                        [label "The Pet Detective"]
                         ))
     
     (define p-callback
@@ -19,7 +19,6 @@
     
     (define t-callback
       (lambda (field event)
-        (displayln (string? (send field get-value)))
         (when (and (eq? (send event get-event-type) 'text-field-enter)
                    (or (equal? (send field get-value) "butterface")
                        (equal? (send field get-value) "Butterface")))

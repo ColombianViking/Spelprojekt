@@ -44,9 +44,8 @@
                                                                       (set! win-text "funny face"))
                                                                     (set! t (+ t 1))
                                                                     (set! n (- n 1))
-                                                                    (set! panic-font (make-object font% (- 40 (* t 2)) 'default))
-                                                                    (send canvas refresh)
-                                                                    (display t))])))
+                                                                    (set! panic-font (make-object font% (abs (- 40 (* t 2))) 'default))
+                                                                    (send canvas refresh))])))
           (lambda args 
             (cond ((null? args) t)
                   ((eq? (car args) 'start)

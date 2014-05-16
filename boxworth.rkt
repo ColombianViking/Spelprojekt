@@ -24,7 +24,6 @@
     
     (define t-callback
       (lambda (field event)
-        (displayln (string? (send field get-value)))
         (when (and (eq? (send event get-event-type) 'text-field-enter)
                    (or (equal? (send field get-value) "0.50")
                        (equal? (send field get-value) "0,50")
