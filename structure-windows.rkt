@@ -44,7 +44,7 @@
         (close-output-port out)))
     (define/public (add-new-score! name&time) ;Tar in ett par och lägger till det i highscore-filen
       (set! high-scores (sort (cons name&time high-scores)
-                              (lambda (x y) (> (cdr x) (cdr y))))))
+                              (lambda (x y) (< (cdr x) (cdr y))))))
     (define/public (load-high-scores!)
       (let ((in (open-input-file input-port)))
         (set! high-scores (read in))
