@@ -1,15 +1,15 @@
 (load "game-canvas.rkt")
 
-(define dodge
+(define dodge ;Fönster som tvingar spelaren att ta sig förbi en motståndarboll.
   (lambda ()
     (define window
       (new frame%
-           [label "What Anybody Should Do"]
+           [label "What Anybody Should Do"] ;WASD
            [width 500]
            [height 500]
            ))
     
-    (define k-handler
+    (define k-handler ;Keyboardhandler som flyttar bollarna på skärmen
       (lambda (k-ev)
         (let ((key (send k-ev get-key-code))) 
           (cond ((eq? 'left key)
@@ -55,6 +55,7 @@
                        (send dc draw-ellipse 2x 2y 10 10)))                  
                 (when (< t-minus 0)
                   (send baller respawn)
+                  (send balla respawn) ;Om inte motståndaren också respawnar så hamnar bollarna på olika y-koordinater och tillåter spelaren att vinna på "fel" sätt
                   (set! t-minus 20))
                 ))))
       
@@ -118,7 +119,7 @@
       
       (define graph-update
         (new timer%
-             [notify-callback (lambda ()
+             [notify-callback (lambda () ;Kollisionsdetektion
                                 (let* ((loc (send baller get-loc)) (x (car loc)) (y (cdr loc)) (2loc (send balla get-loc)) (2x (car 2loc)) (2y (cdr 2loc)))
                                   (when (or (< y 230) (> y 260))
                                     (send baller respawn))

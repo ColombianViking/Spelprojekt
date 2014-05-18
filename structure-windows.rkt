@@ -31,7 +31,7 @@
       (quotient second 60))
     (define/public (add-sec)
       (set! second (+ second 1)))
-    (define/public (get-time)
+    (define/public (get-time) ;Matar ut tiden som sträng i formatet MM:SS
       (if (< (remainder (send player-stats get-sec) 60) 10)
           (string-append  (number->string (send player-stats get-min)) ":0" (number->string (remainder (send player-stats get-sec) 60))) 
           (string-append  (number->string (send player-stats get-min)) ":" (number->string (remainder (send player-stats get-sec) 60)))))
@@ -42,7 +42,7 @@
                                    'can-update)))
         (display high-scores out)
         (close-output-port out)))
-    (define/public (add-new-score! name&time)
+    (define/public (add-new-score! name&time) ;Tar in ett par och lägger till det i highscore-filen
       (set! high-scores (sort (cons name&time high-scores)
                               (lambda (x y) (> (cdr x) (cdr y))))))
     (define/public (load-high-scores!)
@@ -56,14 +56,14 @@
         (close-input-port in)))
     (super-new)))
 
-(define (first-n n lst)
+(define (first-n n lst) ;Egen version av take-funktionen
   (cond ((null? lst) '())
         ((= n 0) '())
         (else (cons (car lst) (first-n (- n 1) (cdr lst))))))
 
 (define player-stats (new player%))
 
-(define next-window
+(define next-window ;Mellan fönster som låter spelaren avsluta spelet, starta om nivån eller gå vidare till nästa.
   (lambda ()
     (define window
       (new frame%
@@ -112,7 +112,7 @@
                        )]))
     (send window show #t)))
 
-(define start-window
+(define start-window ;Startfönstret som låter spelaren skriva in sitt namn, kontrollera musiken och öppna ett hjälpfönster
   (lambda ()
     (begin
       (define window
@@ -147,19 +147,14 @@
 ;                               (send dc draw-text "A tip: Read everything shown to you on the windows." 50 140)
 ;                               (send dc draw-text "Enter your name below if you feel like it." 100 160)
 ;                               (send dc draw-bitmap (read-bitmap "elak.png") 210 250)
-                               (send dc draw-bitmap (read-bitmap "inc.png") 0 0))]))
-      
-;      (define middle
-;        (new horizontal-pane%
-;             [parent window]
-;             [alignment '(center bottom)]))   
+                               (send dc draw-bitmap (read-bitmap "inc.png") 0 0))])) ;Ersatte starttexten med en snyggare bild
       (define input-name
         (new text-field%
              [parent window]
              [label "Name:"]
              [callback (lambda (field event)
                          (when (eq? (send event get-event-type) 'text-field-enter)
-                           (send player-stats set-name (send field get-value))))]))
+                           (send player-stats set-name (send field get-value))))])) ;Denna inläsning sker även på startknappen för att spelaren inte ska vara tvungen att trycka enter
       
       
       (define start-button
@@ -169,7 +164,7 @@
              [callback (lambda (button event)
                          (play-sound "tystnad.wav" #t)
                          (unless (eq? (send input-name get-value) "")
-                           (send player-stats set-name (send input-name get-value)))
+                           (send player-stats set-name (send input-name get-value))) ;Tomma textsträngar i Highscore skapar problem med inläsning senare
                          (send player-stats set-stage 1)
                          (send window show #f)
                          (run-window 1)
@@ -189,7 +184,7 @@
              [callback (let ((t #t))
                          (lambda (button event)
                            (if t
-                               (begin (play-sound "tystnad.wav" #t)
+                               (begin (play-sound "tystnad.wav" #t) ;Enda sättet som vi upptäckt att stoppa musik som spelas
                                       (send music set-label "Play"))
                                (begin (play-sound "Rap_King.wav" #t)
                                       (send music set-label "Stop the music")))
@@ -204,19 +199,20 @@
         
       
       (send player-stats load-high-scores!)
-      (send highscore set-label (let ((txt "")) 
-                                  (for-each (lambda (x)
-                                              (set! txt (string-append (symbol->string (car x)) 
-                                                                       "      " 
-                                                                       (string-append (number->string (quotient (cdr x) 60))
-                                                                                      ":" 
-                                                                                      (if (< (remainder (cdr x) 60) 10) 
-                                                                                          "0" "")
-                                                                                      (number->string (remainder (cdr x) 60))) 
-                                                                       "\n" 
-                                                                       txt))) 
-                                            (first-n 3 (send player-stats get-high-scores)))
-                                  (string-append "   Highscore\nName      Time\n" txt)))
+      (send highscore set-label ;Skriver ut de lägsta tiderna och deras spelarnamn i tabellform
+            (let ((txt ""))
+              (for-each (lambda (x)
+                          (set! txt (string-append (symbol->string (car x)) 
+                                                   "      " 
+                                                   (string-append (number->string (quotient (cdr x) 60))
+                                                                  ":" 
+                                                                  (if (< (remainder (cdr x) 60) 10) 
+                                                                      "0" "")
+                                                                  (number->string (remainder (cdr x) 60))) 
+                                                   "\n" 
+                                                   txt))) 
+                        (first-n 3 (send player-stats get-high-scores)))
+              (string-append "   Highscore\nName      Time\n" txt)))
       (play-sound "Rap_King.wav" #t)
       (send window show #t))))
 
@@ -229,7 +225,7 @@
       (next-window)))
 
 
-(define game-timer-window
+(define game-timer-window ;Timerfönstet som skriver ut nya texter efterhand som tiden går
   (lambda ()
     (define window
       (new frame%
@@ -237,17 +233,23 @@
            [width 300]
            [height 100]))
     
-    (define gt-callback
+    (define gt-callback ;Timers funktion som uppdaterar texten i fönstret och ökar speltiden
       (lambda ()
         (when (send player-stats get-win-cond)
           (send game-timer stop)
           (send insult-message set-label "Congrats"))
         (send player-stats add-sec)
         (if (< (remainder (send player-stats get-sec) 60) 10)
-            (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":0" (number->string (remainder (send player-stats get-sec) 60)))) 
-            (send timer-display set-label (string-append  (number->string (send player-stats get-min)) ":" (number->string (remainder (send player-stats get-sec) 60)))))
+            (send timer-display set-label 
+                  (string-append  (number->string (send player-stats get-min)) 
+                                  ":0" 
+                                  (number->string (remainder (send player-stats get-sec) 60)))) 
+            (send timer-display set-label 
+                  (string-append  (number->string (send player-stats get-min)) 
+                                  ":" 
+                                  (number->string (remainder (send player-stats get-sec) 60)))))
         (cond ((< (send player-stats get-min) 1)
-               (send insult-message set-label "If you want to complete before the foundations of the UNIX-system break down, you better get a move on."))
+               (send insult-message set-label "You can take all the time you want, I'm just a computer."))
               ((< (send player-stats get-min) 2)
                (send insult-message set-label (string-append "I detect a scent of smoke... Are you trying to think "
                                                              (send player-stats get-name)
@@ -256,6 +258,8 @@
                (send insult-message set-label (string-append "2 minutes have passed and you have only done " 
                                                              (number->string (send player-stats get-stage)) 
                                                              " levels.")))
+              ((< (send player-stats get-min) 5)
+               (send insult-message set-label "Roses are red. Violets are blue. We had a monkey do this test and he was faster than you"))
               (else 
                (send insult-message set-label "Time flies like an arrow, fruit flies like a banana")))))
     
@@ -280,7 +284,7 @@
     (send window show #t)
     ))
 
-(define winner-window
+(define winner-window ;Slutfönstret som har en trevlig slutanimation och skriver ut tiden och spelarens namn. Har även valmöjlighet att stänga av musiken och färgerna
   (lambda ()
     (let ((fun-factor #f))
       (define window (new frame% 

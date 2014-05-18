@@ -1,6 +1,6 @@
 (load "game-canvas.rkt")
 
-(define grass
+(define grass ;Fönster som vinns om spelaren inte lyckas klicka båda cirklarna utan att röra muspekaren över mitten delen
   (lambda ()
     (let ((mx 0) (my 0) (start-pressed #f))
       (define window
@@ -12,8 +12,8 @@
       
       (define p-callback
         (lambda (canvas dc)
-          (send dc draw-text (string-append "x = " (number->string mx) ",y = " (number->string my)) 10 10)
-          (if start-pressed
+         ;(send dc draw-text (string-append "x = " (number->string mx) ",y = " (number->string my)) 10 10)
+          (if start-pressed ;Ritar ut en av cirklarna beroende på om den första blivit nedtryckt eller ej
               (begin (send dc set-brush "red" 'solid)
                      (send dc draw-ellipse 225 400 60 60)
                      (send dc draw-text "win" 235 420)
@@ -36,7 +36,7 @@
                 (when (send mouse moving?)
                   (set! mx (send mouse get-x)) 
                   (set! my (send mouse get-y)))
-                (when (and (send mouse button-down? 'left)
+                (when (and (send mouse button-down? 'left) ;Tracking av muskoordinater för att kunna veta vart spelaren klickar
                            (> mx 225) (< mx 285)
                            (> my 50) (< my 110)
                            (not start-pressed))

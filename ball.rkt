@@ -1,5 +1,6 @@
 (load "game-canvas.rkt")
-(require math/number-theory)
+(require math/number-theory) ;Behövs för att kunna beräkna absolutbeloppet
+
 (define ballball
   (lambda ()
     (define window
@@ -39,7 +40,7 @@
           (send dc draw-rectangle 50 100 220 30)
           (send dc draw-text "y * 100 = ? , x * 10 = ?" 55 105)
           (if (< answer-dist 255)
-              (send dc set-brush (make-object color% answer-dist 255 answer-dist) 'solid)
+              (send dc set-brush (make-object color% answer-dist 255 answer-dist) 'solid) ;Gör fönstret för x,y koordinaterna grönare ju närmare man kommer rätt koordinater
               (send dc set-brush "white" 'solid))
           (send dc draw-rectangle 50 140 220 30)
           (send dc draw-text (string-append "y = " (number->string y) ", x = " (number->string x)) 55 145)
@@ -102,7 +103,7 @@
            [notify-callback (lambda ()
                                 (send gcv refresh)
                               (when (and (< (abs (- (send baller get-x) 10)) 3) (< (abs (- (send baller get-y) 300)) 3))
-                                ;(send baller respawn)
+                                ;(send baller respawn) ;Denna rad kan läggas till för att inte massvis med knappar ska skapas när man står på rätt koordinater
                                 (new button%
                                      [label "NICE"]
                                      [parent window]

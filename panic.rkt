@@ -1,6 +1,6 @@
 (load "game-canvas.rkt")
 
-(define panic
+(define panic ;Fönster som tvingar spelaren att stå stilla i en ruta i tio sekunder för att få lösenordet för att klara fönstret
   (lambda ()
     (begin
       (define window (new frame%
@@ -25,7 +25,7 @@
                                                (send dc set-font (make-object font% 12 'default))
                                                (send dc draw-text win-text 230 10)
                                                )))]
-                          [mouse-handler (lambda (mouse)
+                          [mouse-handler (lambda (mouse) ;Startar om timern om man rör sig utanför "chillzone"
                                            (let ((mx (send mouse get-x)) (my (send mouse get-y)))
                                              (when (and (send mouse moving?) (or (> 200 mx) (< 300 mx) (> 300 my) (< 400 my)))
                                                (send canvas refresh))
@@ -34,7 +34,7 @@
                                                (timer 'reset))
                                            
                                              (when (and (< 200 mx) (> 300 mx) (< 300 my) (> 400 my))
-                                               (timer 'start))
+                                               (timer 'start)) ;Detta pausar även timern när spelaren rör sig inuti chillzone
                                              ))]
                           ))
       
@@ -44,7 +44,8 @@
                                                                       (set! win-text "funny face"))
                                                                     (set! t (+ t 1))
                                                                     (set! n (- n 1))
-                                                                    (set! panic-font (make-object font% (abs (- 40 (* t 2))) 'default))
+                                                                   (unless (> t 12)
+                                                                    (set! panic-font (make-object font% (abs (- 40 (* t 3))) 'default)))
                                                                     (send canvas refresh))])))
           (lambda args 
             (cond ((null? args) t)

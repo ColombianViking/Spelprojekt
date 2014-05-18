@@ -10,16 +10,16 @@
 (load "rebus.rkt")
 (load "move.rkt")
 
-(define *window-list* null)
+(define *window-list* null) ;Global lista med alla fönster och ett tillhörande nummer
 
 (define add-window!
   (lambda (num window)
-    (set! *window-list* (cons (cons num window) *window-list*))))
+    (set! *window-list* (cons (cons num window) *window-list*)))) ;Tar in ett en siffra och en funktion och lägger till dem i den globala listan
 
 (define run-window
   (lambda (num)
     (when (pair? (assoc num *window-list*))
-      ((cdr (assoc num *window-list*))))))
+      ((cdr (assoc num *window-list*)))))) ;Tar in en siffra och kör det tillhörande fönstret
 
 (add-window! 1 maze)
 (add-window! 2 panic)
@@ -36,5 +36,5 @@
     
 (define game-start
   (lambda ()
-    (start-window)))
+    (start-window))) ;Kör startfönster
     
