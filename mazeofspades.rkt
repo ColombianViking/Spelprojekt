@@ -1,5 +1,5 @@
 
-(define maze
+(define maze ;maze öppnar förnstret till nivå 1
   (lambda ()
     (define window (new frame%
                         [width 500]
@@ -16,7 +16,7 @@
       (new canvas%
            [parent window]
            [paint-callback p-callback] 
-           ))
+           ));skapar canvasen och kallar på bitmaps
     
     (define t-callback
       (lambda (field event)
@@ -26,11 +26,11 @@
                        (equal? (send field get-value) "B H")
                        (equal? (send field get-value) "b h")))
           (begin (send window show #f)
-                       (start-next)))))
+                       (start-next)))));funktionen kontrollerar om spelaren har rätt svar
                               
     (define text (new text-field%
                       [label "Next password is:"]
                       [parent window]
-                      [callback t-callback]))
+                      [callback t-callback]));skapar textfönster
     
     (send window show #t)))

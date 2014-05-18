@@ -1,4 +1,4 @@
-(define chess
+(define chess ;chess startar nivå 5
   (lambda ()
     (define window (new frame%
                         [width 500]
@@ -17,7 +17,7 @@
     (define canvas (new canvas%
                         [parent window]
                         [paint-callback p-callback] 
-                        ))
+                        ));skapar canvasen, kallar på bitmaps och skriver text
     
     (define t-callback
       (lambda (field event)
@@ -27,12 +27,12 @@
                        (equal? (send field get-value) "c7 c8")
                        (equal? (send field get-value) "C7 C8")))
           (begin (send window show #f)
-                 (start-next)))))
+                 (start-next)))));funktionen kontrollerar om spelaren har rätt svar
     
     (define text (new text-field%
                       [label "XY"]
                       [parent window]
-                      [callback t-callback]))
+                      [callback t-callback]));skapar textfönster
     
     
     (send window show #t)))

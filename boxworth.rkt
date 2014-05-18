@@ -1,4 +1,4 @@
-(define boxworth
+(define boxworth ;boxworth öppnar förnstret till nivå 6
   (lambda ()
     
     (define window (new frame%
@@ -20,7 +20,7 @@
     (define canvas (new canvas%
                         [parent window]
                         [paint-callback p-callback] 
-                        ))
+                        ));skapar canvasen, kallar på bitmaps och skriver text
     
     (define t-callback
       (lambda (field event)
@@ -31,12 +31,12 @@
                        (equal? (send field get-value) "0,5")
                        (equal? (send field get-value) "1/2")))
           (begin (send window show #f)
-                 (start-next)))))
+                 (start-next)))));funktionen kontrollerar om spelaren har rätt svar
     
     (define text (new text-field%
                       [label "Answer:"]
                       [parent window]
-                      [callback t-callback]))
+                      [callback t-callback]));skapar textfönster
     
     (send window show #t)))
 

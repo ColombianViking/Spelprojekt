@@ -1,5 +1,5 @@
 
-(define riddle
+(define riddle ;riddle öppnar förnstret till nivå 7
   (lambda ()    
     (define window (new frame%
                         [width 500]
@@ -17,19 +17,19 @@
     (define canvas (new canvas%
                         [parent window]
                         [paint-callback p-callback] 
-                        ))
+                        ));skapar canvasen, kallar på bitmaps och skriver text
     
     (define t-callback
       (lambda (field event)
         (when (and (eq? (send event get-event-type) 'text-field-enter)
                    (equal? (send field get-value) "44"))
           (begin (send window show #f)
-                       (start-next)))))
+                       (start-next)))));funktionen kontrollerar om spelaren har rätt svar
                               
     (define text (new text-field%
                       [label "Next number is:"]
                       [parent window]
-                      [callback t-callback]))
+                      [callback t-callback]));skapar textfönster
     
     (send window show #t)))
 
