@@ -12,7 +12,7 @@
         
     (define k-handler
       (lambda (k-ev)
-        (let ((key (send k-ev get-key-code))) 
+        (let ((key (send k-ev get-key-code))) ;Kontroller för bollen
           (cond ((eq? 'left key)
                  (send baller move -5 0))
                 ((eq? 'right key)
@@ -29,7 +29,7 @@
                (x (car loc)) 
                (y (cdr loc)) 
                (answer-dist (integer-root (+ (expt (- x 10) 2) 
-                                             (expt (- y 300) 2))
+                                             (expt (- y 300) 2)) ;Längden från det rätta svaret
                                           2)))
           (send dc draw-bitmap (read-bitmap "pilar.png") 0 0)
           (send dc draw-text "(XX) = XYYX" 215 30)

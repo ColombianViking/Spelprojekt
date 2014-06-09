@@ -39,7 +39,7 @@
         (lambda (canvas dc)
           (let* ((loc (send baller get-loc)) (x (car loc)) (y (cdr loc)) (2loc (send balla get-loc)) (2x (car 2loc)) (2y (cdr 2loc)))
             (if (and (eq? 'dead (send baller get-status)) (>= t-minus 0))
-                (begin (send dc draw-bitmap (read-bitmap "duel.png") (+ -5 (random 10)) (+ -5 (random 10)))
+                (begin (send dc draw-bitmap (read-bitmap "duel.png") (+ -5 (random 10)) (+ -5 (random 10))) ;Startar duellfönstret och skakar lite på den
                        (set! t-minus (- t-minus 1)))
                 (begin (send dc set-brush "black" 'solid)
                        (send dc draw-rectangle 0 0 500 500)

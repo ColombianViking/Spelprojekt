@@ -39,12 +39,12 @@
                           ))
       
       (define timer
-        (let* ((t 0) (n 5) (updater (new timer% [notify-callback (lambda ()
+        (let* ((t 0) (n 5) (updater (new timer% [notify-callback (lambda () ;Timern måste ligga i let-variablerna så funktionen inte skapar nya timers
                                                                     (when (= n 0)
                                                                       (set! win-text "funny face"))
                                                                     (set! t (+ t 1))
                                                                     (set! n (- n 1))
-                                                                   (unless (> t 12)
+                                                                   (unless (> t 12) ;Minskning av texten, absolutbeloppet så vi inte får negativa storlekar.
                                                                     (set! panic-font (make-object font% (abs (- 40 (* t 3))) 'default)))
                                                                     (send canvas refresh))])))
           (lambda args 

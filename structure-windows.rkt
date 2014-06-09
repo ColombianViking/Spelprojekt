@@ -1,4 +1,4 @@
-(define player%
+(define player% ;Objekt där vi sparar alla variabler som har att göra med spelarens egenskaper och statistik
   (class object%
     (init-field [name "Duns"]
                 [stage 1]
@@ -45,7 +45,7 @@
     (define/public (add-new-score! name&time) ;Tar in ett par och lägger till det i highscore-filen
       (set! high-scores (sort (cons name&time high-scores)
                               (lambda (x y) (< (cdr x) (cdr y))))))
-    (define/public (load-high-scores!)
+    (define/public (load-high-scores!) ;Läser in filen med de gamla tiderna och sparar dem i highscore variabeln.
       (let ((in (open-input-file input-port)))
         (set! high-scores (read in))
         (set! high-scores (filter (lambda (x) (not (eof-object? x))) high-scores))
@@ -299,7 +299,7 @@
                           [parent window]
                           [paint-callback p-callback]))
       (define rotations
-        (new timer% [notify-callback (lambda ()
+        (new timer% [notify-callback (lambda () ;Animations funktionen. Roterar koordinatsystemet och skriver ut texten
                                        (when fun-factor
                                          (send (send canvas get-dc) rotate (/ pi 180)))
                                        (send (send canvas get-dc) clear)
@@ -328,7 +328,7 @@
                                [label "Exit"]
                                [callback (lambda (button event)
                                            (send window show #f)
-                                           (play-sound "tystnad.wav" #t))]))
+                                           (play-sound "tystnad.wav" #t))])) ;Smidig liten lösning för att kunna stänga av musik som spelas.
       
       (send window show #t)
       (send rotations start 10))))
